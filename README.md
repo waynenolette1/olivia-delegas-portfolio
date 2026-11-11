@@ -56,7 +56,7 @@ All copy comes from Olivia's portfolio text or her LinkedIn profile, lightly edi
 
 ## Deploy
 
-Every push to `main` deploys to production on Vercel (project `oliviadelegas`). To deploy by hand:
+Hosted on Vercel (project `oliviadelegas`). Deploys are manual for now; to deploy on every push, connect GitHub under the account's Login Connections in Vercel, then run `npx vercel git connect`.
 
 ```sh
 npm run deploy   # copy lint, then vercel deploy --prod
