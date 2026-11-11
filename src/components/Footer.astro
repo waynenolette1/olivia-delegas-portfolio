@@ -1,0 +1,72 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cta" data-reveal>
+      <p class="label">Contact</p>
+      <a class="big" href="/contact">
+        <span class="line">Let’s work</span>
+        <span class="line"><span class="serif">together.</span><span class="arrow" aria-hidden="true">→</span></span>
+      </a>
+    </div>
+    <div class="cols">
+      <div>
+        <p class="label">Elsewhere</p>
+        <ul>
+          <li><a class="ulink" href="https://www.linkedin.com/in/olivia-delegas-7a30aa283/" rel="noopener" target="_blank">LinkedIn</a></li>
+          <li><a class="ulink" href="https://www.instagram.com/oliviadelegasdesign/" rel="noopener" target="_blank">Instagram</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Services</p>
+        <ul>
+          <li>Graphic design</li>
+          <li>Marketing</li>
+          <li>Event photography</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Based in</p>
+        <ul><li>Boston, Massachusetts</li></ul>
+      </div>
+    </div>
+    <div class="base">
+      <span>© {year} Olivia Delegas</span>
+      <a href="#top" data-top class="totop">Back to top <span aria-hidden="true">↑</span></a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--teal-deep); color: #efe9de; padding-top: clamp(72px, 12vw, 160px); }
+  .cta .label { opacity: 0.6; margin-bottom: 20px; }
+  .big {
+    display: inline-flex; flex-direction: column;
+    font-size: var(--step-5); font-weight: 500; letter-spacing: -0.045em; line-height: 0.92;
+  }
+  .big .serif { font-size: 1.08em; letter-spacing: -0.02em; color: #a9d3cf; transition: color 0.4s ease; }
+  .big .line:last-child { display: inline-flex; align-items: baseline; gap: 0.18em; }
+  .big .arrow { font-size: 0.6em; color: #a9d3cf; }
+  .big:hover .serif { color: #ffffff; }
+  .big:hover .arrow { transform: translateX(0.18em); }
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: clamp(64px, 9vw, 128px); padding-top: 28px; border-top: 1px solid rgba(239, 233, 222, 0.18); }
+  .cols .label { opacity: 0.55; margin-bottom: 14px; }
+  .cols li { line-height: 1.9; }
+  .base { display: flex; justify-content: space-between; gap: 16px; padding: 48px 0 32px; font-size: var(--step--1); opacity: 0.7; }
+  .totop:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+  @media (max-width: 640px) { .cols { grid-template-columns: 1fr 1fr; } .cols > div:last-child { grid-column: 1 / -1; } }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLAnchorElement>('[data-top]').forEach((a) =>
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+        document.getElementById('main')?.focus({ preventScroll: true });
+      }),
+    );
+  });
+</script>

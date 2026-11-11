@@ -1,0 +1,84 @@
+<dialog class="lb" data-lightbox aria-label="Image viewer">
+  <div class="lb-frame">
+    <img alt="" data-lb-img decoding="async" />
+  </div>
+  <p class="lb-cap"><span data-lb-count class="label"></span><span data-lb-alt></span></p>
+  <button type="button" class="lb-btn lb-close" data-lb-close aria-label="Close">
+    <span aria-hidden="true">Close</span>
+  </button>
+  <button type="button" class="lb-btn lb-prev" data-lb-prev aria-label="Previous image"><span aria-hidden="true">←</span></button>
+  <button type="button" class="lb-btn lb-next" data-lb-next aria-label="Next image"><span aria-hidden="true">→</span></button>
+</dialog>
+
+<style>
+  .lb {
+    width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+    background: rgba(14, 18, 18, 0.96); color: #f1ece3; overflow: hidden;
+  }
+  .lb::backdrop { background: transparent; }
+  .lb[open] { animation: lbIn 0.35s var(--ease-out); }
+  @keyframes lbIn { from { opacity: 0; } }
+  .lb-frame { position: absolute; inset: 64px 72px 72px; display: grid; place-items: center; }
+  .lb-frame img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; transition: opacity 0.25s ease; }
+  .lb-frame img.loading { opacity: 0.25; }
+  .lb-cap { position: absolute; left: 24px; right: 24px; bottom: 20px; display: flex; gap: 18px; align-items: baseline; font-size: 0.9rem; opacity: 0.85; }
+  .lb-cap .label { opacity: 0.7; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .lb-cap span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-btn { position: absolute; display: grid; place-items: center; min-width: 48px; height: 48px; color: inherit; font-size: 1.4rem; border-radius: 50%; transition: background-color 0.25s; }
+  .lb-btn:hover { background: rgba(255, 255, 255, 0.1); }
+  .lb-close { top: 10px; right: 16px; font-size: 0.85rem; letter-spacing: 0.14em; text-transform: uppercase; border-radius: 24px; padding: 0 16px; }
+  .lb-prev { left: 12px; top: 50%; transform: translateY(-50%); }
+  .lb-next { right: 12px; top: 50%; transform: translateY(-50%); }
+  @media (max-width: 640px) {
+    .lb-frame { inset: 60px 8px 96px; }
+    .lb-prev, .lb-next { top: auto; bottom: 44px; transform: none; }
+    .lb-prev { left: auto; right: 72px; }
+    .lb-cap { bottom: 104px; display: none; }
+  }
+</style>
+
+<script>
+  function initLightbox() {
+    const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+    if (!dlg || dlg.dataset.ready) return;
+    dlg.dataset.ready = '1';
+    const triggers = [...document.querySelectorAll<HTMLButtonElement>('[data-lb]')];
+    const big = dlg.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const count = dlg.querySelector<HTMLElement>('[data-lb-count]')!;
+    const alt = dlg.querySelector<HTMLElement>('[data-lb-alt]')!;
+    let i = 0;
+    const srcOf = (t: HTMLElement) => t.querySelector('img')!;
+    function open(k: number) {
+      i = (k + triggers.length) % triggers.length;
+      const src = srcOf(triggers[i]);
+      big.classList.add('loading');
+      big.onload = () => big.classList.remove('loading');
+      big.sizes = '100vw';
+      big.srcset = src.srcset || '';
+      big.src = src.currentSrc || src.src;
+      big.alt = src.alt;
+      alt.textContent = src.alt;
+      count.textContent = `${String(i + 1).padStart(2, '0')} / ${String(triggers.length).padStart(2, '0')}`;
+      if (!dlg.open) { dlg.showModal(); document.documentElement.style.overflow = 'hidden'; }
+    }
+    triggers.forEach((t, k) => t.addEventListener('click', () => open(k)));
+    dlg.querySelector('[data-lb-close]')!.addEventListener('click', () => dlg.close());
+    dlg.querySelector('[data-lb-prev]')!.addEventListener('click', () => open(i - 1));
+    dlg.querySelector('[data-lb-next]')!.addEventListener('click', () => open(i + 1));
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') open(i + 1);
+      if (e.key === 'ArrowLeft') open(i - 1);
+    });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg || (e.target as HTMLElement).classList.contains('lb-frame')) dlg.close(); });
+    dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; triggers[i]?.focus({ preventScroll: true }); });
+
+    // swipe on touch screens
+    let x0 = 0;
+    dlg.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    dlg.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) open(dx < 0 ? i + 1 : i - 1);
+    });
+  }
+  document.addEventListener('astro:page-load', initLightbox);
+</script>

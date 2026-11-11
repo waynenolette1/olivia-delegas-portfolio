@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+// Optional: set PUBLIC_CONTACT_ENDPOINT (e.g. a Formspree form URL) to switch on the inline form.
+const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined;
+---
+<Base title="Contact" description="Get in touch with Olivia Delegas, graphic designer in Boston, Massachusetts." footer={false}>
+  <section class="contact">
+    <div class="wrap">
+      <p class="label kicker" data-reveal>Contact</p>
+      <h1 class="headline" data-reveal style="--d:.05s">Let’s work <span class="serif">together.</span></h1>
+      <p class="sub" data-reveal style="--d:.1s">Have a project in mind? Tell me about it.</p>
+
+      <div class="grid">
+        <ul class="channels" data-reveal style="--d:.15s">
+          <li>
+            <a href="https://www.linkedin.com/in/olivia-delegas-7a30aa283/" target="_blank" rel="noopener">
+              <span class="label">LinkedIn</span>
+              <span class="t">Message Olivia on LinkedIn</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.instagram.com/oliviadelegasdesign/" target="_blank" rel="noopener">
+              <span class="label">Instagram</span>
+              <span class="t">@oliviadelegasdesign</span>
+              <span class="arrow" aria-hidden="true">↗</span>
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+        </ul>
+
+        {endpoint && (
+          <form class="form" method="POST" action={endpoint} data-form data-reveal style="--d:.2s">
+            <label><span class="label">Name</span><input name="name" autocomplete="name" required /></label>
+            <label><span class="label">Email</span><input name="email" type="email" autocomplete="email" required /></label>
+            <label><span class="label">Tell me about your project</span><textarea name="message" rows="5" required></textarea></label>
+            <button type="submit" class="send">Send message <span class="arrow" aria-hidden="true">→</span></button>
+            <p class="status" role="status" data-status></p>
+          </form>
+        )}
+      </div>
+
+      <p class="where label" data-reveal style="--d:.25s">Based in Boston, Massachusetts</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  :global(html body) { background: var(--teal-deep); }
+  :global(html .site-header), :global(html .site-header .mark) { color: #efe9de; }
+  :global(.site-header.is-scrolled) { background: color-mix(in oklab, var(--teal-deep) 86%, transparent) !important; }
+  .contact { min-height: 100svh; color: #efe9de; padding-top: clamp(120px, 18vh, 200px); padding-bottom: 48px; display: flex; }
+  .contact .wrap { display: flex; flex-direction: column; }
+  .kicker { opacity: 0.6; margin-bottom: 20px; }
+  .headline { font-size: var(--step-5); font-weight: 500; letter-spacing: -0.05em; line-height: 0.9; }
+  .headline .serif { color: #a9d3cf; font-size: 1.08em; letter-spacing: -0.02em; }
+  .sub { margin-top: clamp(24px, 3vw, 40px); font-size: var(--step-1); max-width: 30em; opacity: 0.85; line-height: 1.45; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 48px clamp(32px, 6vw, 96px); margin-top: clamp(48px, 7vw, 96px); }
+  .channels a {
+    display: grid; grid-template-columns: 9em 1fr auto; align-items: center; gap: 16px;
+    padding: 26px 0; border-top: 1px solid rgba(239, 233, 222, 0.22);
+    transition: padding 0.5s var(--ease-out), background-color 0.4s, color 0.4s;
+  }
+  .channels li:last-child a { border-bottom: 1px solid rgba(239, 233, 222, 0.22); }
+  .channels .label { opacity: 0.6; }
+  .channels .t { font-size: var(--step-2); letter-spacing: -0.025em; }
+  .channels .arrow { font-size: var(--step-1); }
+  .channels a:hover { padding-inline: 18px; background: #efe9de; color: var(--teal-deep); }
+  .channels a:hover .label { opacity: 0.8; }
+  .channels a:hover .arrow { transform: translate(0.12em, -0.12em); }
+
+  .form { display: grid; gap: 22px; }
+  .form label { display: grid; gap: 8px; }
+  .form .label { opacity: 0.65; }
+  .form input, .form textarea {
+    font: inherit; color: inherit; background: transparent; border: 0; border-bottom: 1px solid rgba(239, 233, 222, 0.35);
+    padding: 10px 0; resize: vertical; border-radius: 0;
+  }
+  .form input:focus, .form textarea:focus { outline: none; border-bottom-color: #efe9de; }
+  .send { justify-self: start; background: #efe9de; color: var(--teal-deep); padding: 14px 24px; border-radius: 99px; font-weight: 500; }
+  .send:hover .arrow { transform: translateX(0.28em); }
+  .status { min-height: 1.5em; opacity: 0.85; }
+  .where { margin-top: auto; padding-top: 72px; opacity: 0.55; }
+  @media (max-width: 640px) {
+    .channels a { grid-template-columns: 1fr auto; gap: 6px 16px; }
+    .channels .label { grid-column: 1 / -1; }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const form = document.querySelector<HTMLFormElement>('[data-form]');
+    if (!form) return;
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        status.textContent = 'Thank you. Your message is on its way.';
+      } catch {
+        status.textContent = 'Something went wrong. Please reach out on LinkedIn instead.';
+      }
+    });
+  });
+</script>

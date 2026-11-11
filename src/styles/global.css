@@ -1,0 +1,124 @@
+/* ------------------------------------------------------------------
+   Olivia Delegas · design tokens
+   Teal is sampled from her own wordmark (#1a5e63). Paper is a warm
+   uncoated stock so the saturated work reads like printed pieces.
+   ------------------------------------------------------------------ */
+:root {
+  --paper: #f4f0e8;
+  --paper-2: #ebe5d9;
+  --ink: #141d1d;
+  --ink-2: #4d5857;
+  --ink-3: #7b8483;
+  --teal: #1a5e63;
+  --teal-deep: #0f3c40;
+  --line: color-mix(in oklab, var(--ink) 14%, transparent);
+
+  /* the live accent: the homepage and project pages retint this */
+  --accent: var(--teal);
+  --accent-ink: #ffffff;
+  --accent-tint: #e3eeee;
+
+  --sans: 'Jost Variable', 'Jost', 'Futura', 'Avenir Next', system-ui, sans-serif;
+  --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+
+  --gutter: clamp(16px, 4.2vw, 64px);
+  --max: 1680px;
+  --radius: 2px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.86rem);
+  --step-0: clamp(1.02rem, 0.98rem + 0.2vw, 1.15rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
+  --step-3: clamp(2rem, 1.5rem + 2.4vw, 3.6rem);
+  --step-4: clamp(2.6rem, 1.6rem + 4.6vw, 6.2rem);
+  --step-5: clamp(3.2rem, 1.4rem + 8.4vw, 10.5rem);
+
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 96px; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-weight: 400;
+  font-feature-settings: 'kern', 'liga';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+img, video { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+h1, h2, h3, h4, p, ul, ol, figure, blockquote, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.skip-link {
+  position: fixed; left: 12px; top: 12px; z-index: 100;
+  padding: 10px 16px; background: var(--ink); color: var(--paper);
+  font-size: var(--step--1); letter-spacing: 0.08em; text-transform: uppercase;
+  transform: translateY(-160%); transition: transform 0.2s var(--ease-out);
+}
+.skip-link:focus { transform: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* type primitives */
+.label {
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+.serif { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -0.005em; }
+.display {
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+/* the underline that draws itself, used for every inline text link */
+.ulink {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition: background-size 0.45s var(--ease-out);
+  padding-bottom: 2px;
+}
+.ulink:hover { background-size: 0 1px; background-position: 100% 100%; }
+
+/* arrow that nudges on hover */
+.arrow { display: inline-block; transition: transform 0.4s var(--ease-out); }
+a:hover .arrow, a:focus-visible .arrow { transform: translateX(0.28em); }
+
+/* Scroll reveals: content is visible by default; JS opts in by adding .js-reveal to <html>. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s var(--ease-out), transform 1.1s var(--ease-out);
+  transition-delay: var(--d, 0s);
+}
+.js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  .js-reveal [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* View transitions: a quiet crossfade for pages, the shared cover morphs on its own */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.45s; animation-timing-function: var(--ease-io); }
+::view-transition-group(*) { animation-duration: 0.7s; animation-timing-function: var(--ease-out); }

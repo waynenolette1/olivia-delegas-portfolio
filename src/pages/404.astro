@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { projects } from '../data/projects';
+---
+<Base title="Page not found">
+  <section class="wrap nf">
+    <p class="label">404</p>
+    <h1>This page has <span class="serif">wandered off.</span></h1>
+    <p class="sub">The work is still here. Pick up the story somewhere else:</p>
+    <ul>
+      {projects.slice(0, 6).map((p) => (
+        <li><a href={`/work/${p.slug}`} style={`--c:${p.color}`}><i></i>{p.title}</a></li>
+      ))}
+    </ul>
+    <a class="home" href="/">Back to the homepage <span class="arrow" aria-hidden="true">→</span></a>
+  </section>
+</Base>
+
+<style>
+  .nf { padding-top: clamp(140px, 22vh, 220px); padding-bottom: 120px; }
+  .nf .label { color: var(--ink-2); }
+  h1 { font-size: var(--step-4); font-weight: 450; letter-spacing: -0.04em; line-height: 0.98; margin-top: 16px; }
+  h1 .serif { color: var(--teal); }
+  .sub { margin-top: 24px; color: var(--ink-2); font-size: var(--step-1); }
+  ul { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  li a { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 99px; transition: background-color 0.3s, border-color 0.3s; }
+  li a i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+  li a:hover { border-color: var(--ink); }
+  .home { display: inline-block; margin-top: 48px; font-weight: 500; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
+</style>

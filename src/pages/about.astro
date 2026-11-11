@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { img } from '../data/projects';
+
+// Experience, education and recognition, as stated by Olivia on LinkedIn and in her portfolio.
+const experience = [
+  { role: 'Media Specialist', org: 'YMCA Camp Massapoag', note: 'Summer internship · print media design, daily camp photo albums, videography', href: '/work/ymca-camp-massapoag' },
+  { role: 'Athletics Department intern', org: 'New England College', note: 'Social and poster graphics for teams and campus events', href: '/work/nec-athletics' },
+];
+const practice = ['Branding', 'Digital design', 'UI and UX', 'Social media', 'Print', 'Typography', 'Motion', 'Marketing'];
+const tools = ['Adobe Creative Suite', 'InDesign', 'After Effects', 'Adobe XD', 'Figma', 'FontStruct'];
+---
+<Base title="About" description="Olivia Delegas is a Boston-based graphic designer specializing in brand design, marketing, and visual storytelling.">
+  <section class="wrap about">
+    <div class="intro">
+      <p class="label kicker" data-reveal>About</p>
+      <h1 class="headline" data-reveal style="--d:.06s">
+        Design as a tool for <span class="serif">meaningful connection</span> between brands and the people they reach.
+      </h1>
+      <div class="bio" data-reveal style="--d:.12s">
+        <p class="first">My name is Olivia Delegas, and I’m a graphic designer specializing in brand design and marketing. My design philosophy centers around visual storytelling and using design as a tool to create meaningful connections between brands and their audiences.</p>
+        <p>I believe strong design goes beyond aesthetics; it communicates a message, establishes an identity, and creates a lasting impression.</p>
+        <p>My work spans branding, digital design, UI and UX, social media, print, typography, motion, and marketing. I’m especially interested in projects that let me explore the relationship between design and storytelling while building cohesive and memorable brand identities.</p>
+        <p>I’m always looking for new ways to push my creativity, learn new skills, and create work that is both visually engaging and purposeful.</p>
+      </div>
+    </div>
+
+    <div class="desk" aria-hidden="true">
+      <div class="desk-sticky">
+        <a href="/work/futura-type-specimen" tabindex="-1" class="piece p1"><Image src={img('futura-type-specimen', 29)} alt="" widths={[400, 700]} sizes="22vw" /></a>
+        <a href="/work/wrestle-like-a-girl" tabindex="-1" class="piece p2"><Image src={img('wrestle-like-a-girl', 68)} alt="" widths={[400, 700]} sizes="22vw" /></a>
+        <a href="/work/nec-athletics" tabindex="-1" class="piece p3"><Image src={img('nec-athletics', 50)} alt="" widths={[400, 700]} sizes="22vw" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap facts" aria-label="Background">
+    <div class="col" data-reveal>
+      <h2 class="label">Experience</h2>
+      <ul class="xp">
+        {experience.map((x) => (
+          <li>
+            <a href={x.href}>
+              <span class="role">{x.role}</span>
+              <span class="org">{x.org}</span>
+              <span class="note">{x.note}</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="col" data-reveal style="--d:.06s">
+      <h2 class="label">Education</h2>
+      <p class="big">New England College</p>
+      <p class="sub">Bachelor of Fine Arts, Graphic Design</p>
+      <h2 class="label gap">Recognition</h2>
+      <p class="big">Alpha Chi National College Honor Society</p>
+      <p class="sub">Inducted, New Hampshire Chapter</p>
+    </div>
+    <div class="col" data-reveal style="--d:.12s">
+      <h2 class="label">Services</h2>
+      <ul class="tags"><li>Graphic design</li><li>Marketing</li><li>Event photography</li></ul>
+      <h2 class="label gap">Practice</h2>
+      <ul class="tags">{practice.map((t) => <li>{t}</li>)}</ul>
+      <h2 class="label gap">Tools</h2>
+      <ul class="tags">{tools.map((t) => <li>{t}</li>)}</ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 120px); padding-top: clamp(120px, 16vh, 176px); padding-bottom: clamp(64px, 9vw, 128px); }
+  .kicker { color: var(--ink-2); margin-bottom: 24px; }
+  .headline { font-size: var(--step-4); font-weight: 450; letter-spacing: -0.04em; line-height: 0.98; text-wrap: balance; }
+  .headline .serif { color: var(--teal); font-size: 1.06em; letter-spacing: -0.02em; }
+  .bio { margin-top: clamp(40px, 6vw, 72px); max-width: 36em; display: grid; gap: 1.1em; color: var(--ink-2); font-size: var(--step-0); }
+  .bio .first { font-size: var(--step-1); color: var(--ink); line-height: 1.45; letter-spacing: -0.01em; }
+
+  .desk { position: relative; }
+  .desk-sticky { position: sticky; top: 120px; height: min(78vh, 760px); }
+  .piece { position: absolute; display: block; box-shadow: 0 30px 60px -30px rgba(20, 29, 29, 0.55); transition: transform 0.9s var(--ease-out); }
+  .piece img { width: 100%; }
+  .p1 { width: 50%; left: 2%; top: 4%; transform: rotate(-5deg); }
+  .p2 { width: 52%; right: 0; top: 16%; transform: rotate(3.5deg); z-index: 2; }
+  .p3 { width: 46%; left: 18%; top: 46%; transform: rotate(-1.5deg); z-index: 3; }
+  .desk:hover .p1 { transform: rotate(-7deg) translate(-10px, -6px); }
+  .desk:hover .p2 { transform: rotate(5deg) translate(10px, -10px); }
+  .desk:hover .p3 { transform: rotate(0deg) translateY(8px); }
+
+  .facts { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 40px clamp(32px, 5vw, 80px); padding-top: 32px; padding-bottom: clamp(96px, 12vw, 180px); border-top: 1px solid var(--ink); }
+  .col .label { color: var(--ink-2); margin-bottom: 16px; }
+  .col .gap { margin-top: 40px; }
+  .xp li + li { margin-top: 2px; }
+  .xp a { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .xp .role { font-size: var(--step-1); letter-spacing: -0.015em; font-weight: 480; }
+  .xp .org { grid-column: 1; color: var(--teal); font-weight: 500; }
+  .xp .note { grid-column: 1; color: var(--ink-2); font-size: var(--step--1); margin-top: 4px; }
+  .xp .arrow { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+  .big { font-size: var(--step-1); letter-spacing: -0.015em; font-weight: 480; line-height: 1.25; }
+  .sub { color: var(--ink-2); margin-top: 4px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tags li { padding: 6px 12px; border: 1px solid var(--line); border-radius: 99px; font-size: var(--step--1); }
+
+  @media (max-width: 999px) {
+    .about { grid-template-columns: 1fr; padding-top: 108px; }
+    .desk-sticky { position: relative; top: 0; height: min(100vw, 520px); }
+    .facts { grid-template-columns: 1fr 1fr; }
+    .facts .col:first-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 640px) {
+    .facts { grid-template-columns: 1fr; }
+  }
+</style>

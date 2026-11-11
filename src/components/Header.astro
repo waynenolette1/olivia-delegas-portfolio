@@ -1,0 +1,172 @@
+---
+import { projects } from '../data/projects';
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const is = (p: string) => (p === '/' ? path === '/' || path.startsWith('/work') : path.startsWith(p));
+---
+<header class="site-header" data-header transition:persist="header">
+  <div class="bar wrap">
+    <a href="/" class="mark" aria-label="Olivia Delegas, home">
+      <span>Olivia</span><span>Delegas</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="/#work" aria-current={is('/') ? 'true' : undefined} data-nav="/">Work</a>
+      <a href="/about" aria-current={is('/about') ? 'page' : undefined} data-nav="/about">About</a>
+      <a href="/contact" aria-current={is('/contact') ? 'page' : undefined} data-nav="/contact">Contact</a>
+    </nav>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-menu-btn>
+      <span class="menu-word">Menu</span>
+      <span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+
+  <div class="menu" id="menu" data-menu hidden>
+    <div class="menu-inner wrap">
+      <nav class="menu-primary" aria-label="Menu">
+        <a href="/#work" style="--i:0">Work</a>
+        <a href="/about" style="--i:1">About</a>
+        <a href="/contact" style="--i:2">Contact</a>
+      </nav>
+      <div class="menu-projects" style="--i:3">
+        <p class="label">Selected work</p>
+        <ol>
+          {projects.map((p, i) => (
+            <li><a href={`/work/${p.slug}`}><span class="n">{String(i + 1).padStart(2, '0')}</span>{p.title}</a></li>
+          ))}
+        </ol>
+      </div>
+      <div class="menu-foot" style="--i:4">
+        <a href="https://www.linkedin.com/in/olivia-delegas-7a30aa283/" rel="noopener" target="_blank">LinkedIn</a>
+        <a href="https://www.instagram.com/oliviadelegasdesign/" rel="noopener" target="_blank">Instagram</a>
+        <span>Boston, Massachusetts</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    transition: transform 0.5s var(--ease-out), background-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .site-header.is-scrolled {
+    background: color-mix(in oklab, var(--paper) 88%, transparent);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    backdrop-filter: saturate(1.4) blur(14px);
+    box-shadow: 0 1px 0 var(--line);
+  }
+  .site-header.is-hidden:not(.menu-open) { transform: translateY(-100%); }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 76px; }
+
+  .mark {
+    display: inline-flex; flex-direction: column;
+    font-weight: 600; font-size: 1.12rem; line-height: 0.92; letter-spacing: -0.02em;
+    color: var(--teal);
+    transition: color 0.3s ease;
+  }
+  .mark span:last-child { padding-left: 0.62em; }
+  .mark:hover { color: var(--teal-deep); }
+
+  .nav { display: flex; gap: clamp(20px, 3vw, 44px); }
+  .nav a {
+    position: relative; font-size: 0.95rem; font-weight: 450; letter-spacing: 0.01em; padding: 6px 0;
+  }
+  .nav a::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px; background: currentColor;
+    transform: scaleX(0); transform-origin: right; transition: transform 0.45s var(--ease-out);
+  }
+  .nav a:hover::after, .nav a[aria-current]::after { transform: scaleX(1); transform-origin: left; }
+
+  .menu-btn { display: none; align-items: center; gap: 10px; padding: 10px 0 10px 10px; font-size: 0.95rem; font-weight: 500; position: relative; z-index: 2; }
+  .menu-icon { width: 22px; height: 10px; position: relative; }
+  .menu-icon i { position: absolute; left: 0; right: 0; height: 1.6px; background: currentColor; transition: transform 0.5s var(--ease-out), top 0.5s var(--ease-out); }
+  .menu-icon i:first-child { top: 0; }
+  .menu-icon i:last-child { top: 8.4px; }
+  .menu-open .menu-icon i:first-child { top: 4.2px; transform: rotate(45deg); }
+  .menu-open .menu-icon i:last-child { top: 4.2px; transform: rotate(-45deg); }
+
+  .menu {
+    position: fixed; inset: 0; z-index: 1; background: var(--teal); color: #f4f0e8;
+    overflow-y: auto; overscroll-behavior: contain;
+    clip-path: inset(0 0 100% 0); transition: clip-path 0.7s var(--ease-io);
+  }
+  .menu[hidden] { display: block; visibility: hidden; }
+  .menu-open .menu { clip-path: inset(0 0 0 0); visibility: visible; }
+  .menu-open .mark, .menu-open .menu-btn { color: #f4f0e8; }
+  .menu-inner { min-height: 100%; padding-top: 108px; padding-bottom: 32px; display: flex; flex-direction: column; gap: 40px; }
+  .menu-primary { display: flex; flex-direction: column; }
+  .menu-primary a {
+    font-size: clamp(3rem, 14vw, 5rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1.02;
+  }
+  .menu-primary a, .menu-projects, .menu-foot {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s var(--ease-out), transform 0.8s var(--ease-out);
+    transition-delay: calc(0.18s + var(--i) * 0.06s);
+  }
+  .menu-open .menu-primary a, .menu-open .menu-projects, .menu-open .menu-foot { opacity: 1; transform: none; }
+  .menu-projects .label { opacity: 0.7; margin-bottom: 12px; }
+  .menu-projects ol { columns: 1; }
+  .menu-projects a { display: flex; gap: 14px; padding: 7px 0; font-size: 1.05rem; border-top: 1px solid rgba(244, 240, 232, 0.18); }
+  .menu-projects .n { font-variant-numeric: tabular-nums; opacity: 0.6; width: 1.6em; }
+  .menu-foot { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 0.95rem; opacity: 0.85; }
+  .menu-foot span { opacity: 0.7; }
+
+  @media (max-width: 760px) {
+    .nav { display: none; }
+    .menu-btn { display: inline-flex; }
+    .bar { height: 64px; }
+  }
+  @media (min-width: 761px) { .menu { display: none !important; } }
+</style>
+
+<script>
+  function initHeader() {
+    const header = document.querySelector<HTMLElement>('[data-header]');
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+    const menu = document.querySelector<HTMLElement>('[data-menu]');
+    if (!header || !btn || !menu || header.dataset.ready) return;
+    header.dataset.ready = '1';
+
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      header.classList.toggle('is-scrolled', y > 12);
+      if (Math.abs(y - lastY) > 6) { header.classList.toggle('is-hidden', y > lastY && y > 240); lastY = y; }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    const setOpen = (open: boolean) => {
+      header.classList.toggle('menu-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.querySelector('.menu-word')!.textContent = open ? 'Close' : 'Menu';
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+      if (open) { menu.hidden = false; requestAnimationFrame(() => menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true })); }
+      else { setTimeout(() => { if (!header.classList.contains('menu-open')) menu.hidden = true; }, 700); }
+    };
+    btn.addEventListener('click', () => setOpen(!header.classList.contains('menu-open')));
+    menu.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && header.classList.contains('menu-open')) { setOpen(false); btn.focus(); } });
+    // keep tab focus inside the open menu
+    header.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || !header.classList.contains('menu-open')) return;
+      const f = [btn, ...menu.querySelectorAll<HTMLElement>('a')];
+      const i = f.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+    });
+
+    document.addEventListener('astro:after-swap', () => {
+      setOpen(false);
+      header.classList.remove('is-hidden');
+      // header persists across pages, so refresh the current-page marker by hand
+      const path = location.pathname.replace(/\/$/, '') || '/';
+      header.querySelectorAll<HTMLAnchorElement>('[data-nav]').forEach((a) => {
+        const p = a.dataset.nav!;
+        const on = p === '/' ? path === '/' || path.startsWith('/work') : path.startsWith(p);
+        if (on) a.setAttribute('aria-current', p === '/' ? 'true' : 'page'); else a.removeAttribute('aria-current');
+      });
+      onScroll();
+    });
+  }
+  document.addEventListener('astro:page-load', initHeader);
+</script>
