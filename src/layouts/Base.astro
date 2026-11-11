@@ -11,6 +11,7 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
   accent?: string;
   accentInk?: string;
   accentTint?: string;
@@ -19,7 +20,8 @@ interface Props {
 const {
   title,
   description = 'Olivia Delegas is a Boston-based graphic designer specializing in brand design, marketing, and visual storytelling.',
-  image,
+  image = '/og/home.jpg',
+  imageAlt = 'Olivia Delegas, graphic designer: branding, marketing, and visual storytelling.',
   accent,
   accentInk,
   accentTint,
@@ -27,7 +29,7 @@ const {
 } = Astro.props;
 const fullTitle = title ? `${title} · Olivia Delegas` : 'Olivia Delegas · Graphic Designer';
 const canonical = new URL(Astro.url.pathname.replace(/(.)\/$/, '$1'), Astro.site);
-const ogImage = image ? new URL(image, Astro.site).toString() : undefined;
+const ogImage = new URL(image, Astro.site).toString();
 const style = [accent && `--accent:${accent}`, accentInk && `--accent-ink:${accentInk}`, accentTint && `--accent-tint:${accentTint}`]
   .filter(Boolean)
   .join(';');
@@ -46,8 +48,15 @@ const style = [accent && `--accent:${accent}`, accentInk && `--accent-ink:${acce
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:site_name" content="Olivia Delegas" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <script is:inline>document.documentElement.classList.add('js-reveal');</script>
     <ClientRouter fallback="swap" />
   </head>

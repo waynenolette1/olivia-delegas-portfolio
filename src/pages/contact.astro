@@ -32,11 +32,41 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined;
 
         {endpoint && (
           <form class="form" method="POST" action={endpoint} data-form data-reveal style="--d:.2s">
-            <label><span class="label">Name</span><input name="name" autocomplete="name" required /></label>
-            <label><span class="label">Email</span><input name="email" type="email" autocomplete="email" required /></label>
-            <label><span class="label">Tell me about your project</span><textarea name="message" rows="5" required></textarea></label>
-            <button type="submit" class="send">Send message <span class="arrow" aria-hidden="true">→</span></button>
-            <p class="status" role="status" data-status></p>
+            <div class="row2">
+              <label class="field"><span class="q">Your name</span><input name="Name" autocomplete="name" placeholder="First and last name" required /></label>
+              <label class="field"><span class="q">Email</span><input name="email" type="email" autocomplete="email" placeholder="you@example.com" required /></label>
+            </div>
+
+            <fieldset class="field">
+              <legend class="q">What can I help with? <span class="opt">Choose any</span></legend>
+              <div class="chips">
+                {['Branding', 'Marketing', 'Print', 'Social media', 'Event photography', 'Something else'].map((t) => (
+                  <label class="chip"><input type="checkbox" name="Interested in" value={t} /><span>{t}</span></label>
+                ))}
+              </div>
+            </fieldset>
+
+            <label class="field"><span class="q">Tell me about your project</span><textarea name="Project" rows="4" placeholder="What are you making, who is it for, and what should it say?" required></textarea></label>
+
+            <fieldset class="field">
+              <legend class="q">Timeline <span class="opt">Optional</span></legend>
+              <div class="chips">
+                {['Immediate (within 2 weeks)', '1-3 months', '3+ months', 'Flexible'].map((t) => (
+                  <label class="chip"><input type="radio" name="Timeline" value={t} /><span>{t}</span></label>
+                ))}
+              </div>
+            </fieldset>
+
+            <label class="field budget"><span class="q">Budget <span class="opt">Optional</span></span><span class="money"><span aria-hidden="true">$</span><input name="Budget" inputmode="decimal" autocomplete="off" placeholder="A rough number is fine" /></span></label>
+
+            <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+            <input type="hidden" name="_subject" value="New project inquiry from oliviadelegasdesign" />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_captcha" value="false" />
+            <div class="submit">
+              <button type="submit" class="send" data-send>Send inquiry <span class="arrow" aria-hidden="true">→</span></button>
+              <p class="status" role="status" data-status></p>
+            </div>
           </form>
         )}
       </div>
@@ -56,7 +86,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined;
   .headline { font-size: var(--step-5); font-weight: 500; letter-spacing: -0.05em; line-height: 0.9; }
   .headline .serif { color: #a9d3cf; font-size: 1.08em; letter-spacing: -0.02em; }
   .sub { margin-top: clamp(24px, 3vw, 40px); font-size: var(--step-1); max-width: 30em; opacity: 0.85; line-height: 1.45; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 48px clamp(32px, 6vw, 96px); margin-top: clamp(48px, 7vw, 96px); }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 48px clamp(32px, 6vw, 96px); margin-top: clamp(48px, 7vw, 96px); }
   .channels a {
     display: grid; grid-template-columns: 9em 1fr auto; align-items: center; gap: 16px;
     padding: 26px 0; border-top: 1px solid rgba(239, 233, 222, 0.22);
@@ -70,17 +100,45 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined;
   .channels a:hover .label { opacity: 0.8; }
   .channels a:hover .arrow { transform: translate(0.12em, -0.12em); }
 
-  .form { display: grid; gap: 22px; }
-  .form label { display: grid; gap: 8px; }
-  .form .label { opacity: 0.65; }
-  .form input, .form textarea {
-    font: inherit; color: inherit; background: transparent; border: 0; border-bottom: 1px solid rgba(239, 233, 222, 0.35);
-    padding: 10px 0; resize: vertical; border-radius: 0;
+  .form {
+    order: -1; align-content: start; display: grid; gap: 30px;
+    padding: clamp(24px, 3.4vw, 48px); border-radius: 6px;
+    background: rgba(239, 233, 222, 0.06); border: 1px solid rgba(239, 233, 222, 0.14);
   }
-  .form input:focus, .form textarea:focus { outline: none; border-bottom-color: #efe9de; }
-  .send { justify-self: start; background: #efe9de; color: var(--teal-deep); padding: 14px 24px; border-radius: 99px; font-weight: 500; }
+  .field { display: grid; gap: 10px; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .q { font-size: var(--step-0); font-weight: 500; letter-spacing: -0.005em; padding: 0; }
+  .opt { font-weight: 400; font-size: var(--step--1); opacity: 0.55; margin-left: 8px; }
+  .form input:not([type=checkbox]):not([type=radio]), .form textarea {
+    font: inherit; color: inherit; width: 100%; background: transparent; border: 0;
+    border-bottom: 1px solid rgba(239, 233, 222, 0.3); padding: 10px 0; resize: vertical; border-radius: 0;
+    transition: border-color 0.25s;
+  }
+  .form ::placeholder { color: rgba(239, 233, 222, 0.38); }
+  .form input:focus, .form textarea:focus { outline: none; border-bottom-color: #a9d3cf; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 28px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { position: relative; cursor: pointer; }
+  .chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .chip span {
+    display: inline-block; padding: 9px 16px; border-radius: 99px; font-size: 0.95rem;
+    border: 1px solid rgba(239, 233, 222, 0.3); transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .chip:hover span { border-color: rgba(239, 233, 222, 0.7); }
+  .chip input:checked + span { background: #a9d3cf; border-color: #a9d3cf; color: var(--teal-deep); }
+  .chip input:focus-visible + span { outline: 2px solid #a9d3cf; outline-offset: 3px; }
+  .money { display: flex; align-items: baseline; gap: 8px; border-bottom: 1px solid rgba(239, 233, 222, 0.3); }
+  .money:focus-within { border-bottom-color: #a9d3cf; }
+  .money input { border: 0 !important; flex: 1; min-width: 0; }
+  .budget { max-width: 340px; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .submit { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+  .send { background: #efe9de; color: var(--teal-deep); padding: 16px 28px; border-radius: 99px; font-weight: 500; font-size: 1.02rem; transition: background-color 0.3s; }
+  .send:hover { background: #ffffff; }
   .send:hover .arrow { transform: translateX(0.28em); }
-  .status { min-height: 1.5em; opacity: 0.85; }
+  .send[disabled] { opacity: 0.6; cursor: progress; }
+  .status { font-size: var(--step--1); opacity: 0.7; }
+  @media (min-width: 960px) { .grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); } }
+  @media (max-width: 560px) { .row2 { grid-template-columns: 1fr; } .form { padding: 22px 18px; } }
   .where { margin-top: auto; padding-top: 72px; opacity: 0.55; }
   @media (max-width: 640px) {
     .channels a { grid-template-columns: 1fr auto; gap: 6px 16px; }
@@ -95,14 +153,19 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT as string | undefined;
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const send = form.querySelector<HTMLButtonElement>('[data-send]')!;
+      send.disabled = true;
       status.textContent = 'Sending…';
       try {
         const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-        if (!res.ok) throw new Error(String(res.status));
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.success === false || data.success === 'false') throw new Error(String(res.status));
         form.reset();
-        status.textContent = 'Thank you. Your message is on its way.';
+        status.textContent = 'Thank you! Your inquiry is on its way.';
       } catch {
         status.textContent = 'Something went wrong. Please reach out on LinkedIn instead.';
+      } finally {
+        send.disabled = false;
       }
     });
   });

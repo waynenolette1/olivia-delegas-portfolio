@@ -1,5 +1,5 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import { projects, neighbours, type Project, type Shot } from '../../data/projects';
@@ -10,7 +10,6 @@ export function getStaticPaths() {
 const { project: p } = Astro.props as { project: Project };
 const { next, index } = neighbours(p.slug);
 const n = (i: number) => String(i + 1).padStart(2, '0');
-const og = await getImage({ src: p.cover.src, width: 1200, format: 'jpg' });
 const ratio = (s: Shot) => s.src.width / s.src.height;
 const W = { full: [800, 1200, 1600, 2200], half: [600, 900, 1300], third: [480, 720, 1000], album: [480, 720, 1000] };
 const photos = p.blocks.reduce((t, b) => t + (b.kind === 'album' ? b.shots.length : 0), 0);
@@ -18,7 +17,8 @@ const photos = p.blocks.reduce((t, b) => t + (b.kind === 'album' ? b.shots.lengt
 <Base
   title={p.title}
   description={p.lede}
-  image={og.src}
+  image={`/og/${p.slug}.jpg`}
+  imageAlt={`${p.title}, ${p.kind.toLowerCase()} by Olivia Delegas.`}
   accent={p.color}
   accentInk={p.ink}
   accentTint={p.tint}
