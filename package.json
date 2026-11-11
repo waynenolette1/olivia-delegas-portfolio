@@ -9,7 +9,7 @@
     "lint:copy": "node scripts/lint-copy.mjs",
     "qa": "node scripts/qa.mjs",
     "shoot": "node scripts/shoot.mjs",
-    "deploy": "npm run lint:copy && astro build && npx -y wrangler@4 deploy"
+    "deploy": "npm run lint:copy && npx -y vercel@latest deploy --prod --yes"
   },
   "dependencies": {
     "@fontsource-variable/jost": "^5.3.0",
