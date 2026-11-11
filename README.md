@@ -2,7 +2,7 @@
 
 A new generation of [oliviadelegasdesign.com](https://www.oliviadelegasdesign.com): a static, image-optimised Astro site built from Olivia's own work and words.
 
-**Status:** private preview. Nothing is deployed. Her live Squarespace site is untouched.
+**Live:** https://oliviadelegas.wnolette-atlas.workers.dev (Cloudflare, static assets). Her Squarespace site at oliviadelegasdesign.com is untouched.
 
 ## Run it
 
@@ -52,15 +52,12 @@ All copy comes from Olivia's portfolio text or her LinkedIn profile, lightly edi
 
 1. **Degree wording.** The About page says "New England College · Bachelor of Fine Arts, Graphic Design" with no year and no "graduate" claim, because graduation status isn't confirmed. Add the year once known.
 2. **Contact form.** Her Squarespace form can't be reused. The contact page currently offers LinkedIn and Instagram. To turn on the inline form, set `PUBLIC_CONTACT_ENDPOINT` to a form service URL (Formspree or similar) tied to an inbox she chooses, then rebuild.
-3. **Domain.** Set `SITE_URL` at build time for canonical and Open Graph URLs (defaults to her current domain).
+3. **Domain.** Canonical and Open Graph URLs point at the workers.dev address. If her domain moves here, rebuild with `SITE_URL`.
 
-## Private preview deployment (when authorized)
-
-The build is plain static files, so any static host works. A Cloudflare Pages preview behind Cloudflare Access is a good private option:
+## Deploy
 
 ```sh
-npm run build
-npx wrangler pages deploy dist --project-name olivia-delegas-preview --branch preview
+npm run deploy   # copy lint, build, upload dist/ to Cloudflare (wrangler.jsonc)
 ```
 
-Then protect the `*.pages.dev` preview hostname with a Cloudflare Access policy limited to the people who should see it.
+Plain static files, no server code. `wrangler.jsonc` serves `dist/` with clean URLs and the custom 404 page; `public/_headers` sets long-lived caching for hashed assets. To move to her own domain later, add it as a custom domain on the `oliviadelegas` Worker in Cloudflare and rebuild with `SITE_URL` set to it.

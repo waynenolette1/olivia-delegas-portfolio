@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   // Set SITE_URL when a preview/production domain is chosen.
-  site: process.env.SITE_URL || 'https://www.oliviadelegasdesign.com',
+  site: process.env.SITE_URL || 'https://oliviadelegas.wnolette-atlas.workers.dev',
   trailingSlash: 'ignore',
   build: { format: 'directory', inlineStylesheets: 'auto' },
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
