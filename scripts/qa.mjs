@@ -48,6 +48,23 @@ for (const vp of [{ width: 390, height: 844 }, { width: 1440, height: 900 }]) {
     if (r.h1 !== 1) problems.push(`${tag} has ${r.h1} h1`);
     if (errs.length) problems.push(`${tag} console: ${errs.join(' | ')}`);
   }
+  // Regression: the phone menu must cover the whole screen even after scrolling
+  // (a blurred header once trapped it in a 64px strip and froze the page).
+  if (vp.width < 760) {
+    await page.goto(base + '/work/ymca-camp-massapoag', { waitUntil: 'networkidle' });
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+    await page.waitForTimeout(300);
+    await page.evaluate(() => window.scrollBy(0, -60));
+    await page.waitForTimeout(500);
+    await page.click('[data-menu-btn]');
+    await page.waitForTimeout(900);
+    const h = await page.evaluate(() => document.querySelector('[data-menu]').getBoundingClientRect().height);
+    if (h < vp.height - 1) problems.push(`menu mid-scroll is ${h}px tall, expected ${vp.height}`);
+    await page.click('[data-menu-btn]');
+    await page.waitForTimeout(900);
+    const locked = await page.evaluate(() => document.documentElement.style.overflow === 'hidden');
+    if (locked) problems.push('page still scroll-locked after closing menu');
+  }
   await ctx.close();
 }
 await browser.close();
