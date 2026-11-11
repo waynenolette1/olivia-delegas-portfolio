@@ -34,6 +34,8 @@ npm run shoot -- http://127.0.0.1:4321 docs/reveal/after   # screenshots
 | `src/pages/work/[slug].astro` | Project template (same URLs as the Squarespace site) |
 | `src/pages/about.astro`, `contact.astro`, `404.astro` | About, contact, not found |
 | `src/assets/work/` | Her original images, converted losslessly; Astro generates responsive WebP |
+| `api/contact.js` | Contact form endpoint (Vercel Function): validation, honeypot, private storage, optional email |
+| `public/og/`, `scripts/og.mjs` | Link-preview cards (1200x630) for the homepage and each project; regenerate with `npm run og` |
 | `public/media/` | SkipIt motion logo, recovered from her site's video stream |
 | `docs/reveal/` | Before and after screenshots and comparison sheets |
 
@@ -51,7 +53,7 @@ All copy comes from Olivia's portfolio text or her LinkedIn profile, lightly edi
 ### Open items before the reveal
 
 1. **Degree wording.** The About page says "New England College · Bachelor of Fine Arts, Graphic Design" with no year and no "graduate" claim, because graduation status isn't confirmed. Add the year once known.
-2. **Contact form.** Her Squarespace form can't be reused. The contact page currently offers LinkedIn and Instagram. To turn on the inline form, set `PUBLIC_CONTACT_ENDPOINT` to a form service URL (Formspree or similar) tied to an inbox she chooses, then rebuild.
+2. **Contact form email.** The inquiry form is live: `api/contact.js` validates each inquiry and saves it privately to the `olivia-inquiries` Vercel Blob store. Read them with `npx vercel env pull .env.local --environment=production` once, then `npm run inquiries`. To also email each inquiry, set `INQUIRY_EMAIL` in the Vercel project (Production) to her address and redeploy; FormSubmit sends one confirmation email to that inbox the first time.
 3. **Domain.** Canonical and Open Graph URLs point at oliviadelegasdesign.vercel.app. If her domain moves here, rebuild with `SITE_URL`.
 
 ## Deploy
